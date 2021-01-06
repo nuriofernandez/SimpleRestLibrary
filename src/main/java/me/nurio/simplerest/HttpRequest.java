@@ -11,6 +11,8 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class HttpRequest {
 
+    private final HttpConnection httpConnection;
+
     private final PrintWriter out;
     private final BufferedOutputStream dataOut;
 
@@ -18,8 +20,8 @@ public class HttpRequest {
     private final String method;
 
     public void process() throws IOException {
-        System.out.println("Requested method: " + method);
-        System.out.println("Requested path: " + path);
+        httpConnection.log("Requested method: " + method);
+        httpConnection.log("Requested path: " + path);
 
         String body = "Works!";
         String content = "text/html";
