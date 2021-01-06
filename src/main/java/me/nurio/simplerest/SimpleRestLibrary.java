@@ -2,7 +2,6 @@ package me.nurio.simplerest;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.Date;
 
 public class SimpleRestLibrary {
 
@@ -16,8 +15,7 @@ public class SimpleRestLibrary {
 
             // we listen until user halts server execution
             while (true) {
-                HttpServer myServer = new HttpServer(serverConnect.accept());
-                System.out.println("Connecton opened. (" + new Date() + ")");
+                HttpConnection myServer = new HttpConnection(serverConnect.accept());
                 myServer.start();
             }
         } catch (IOException e) {
