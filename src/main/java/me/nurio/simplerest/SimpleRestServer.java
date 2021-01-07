@@ -12,9 +12,15 @@ import java.net.ServerSocket;
 @RequiredArgsConstructor
 public class SimpleRestServer extends Thread {
 
-    private final EventManager eventManager = new EventManager();
+    private EventManager eventManager = new EventManager();
     private final int port;
+
     private boolean online;
+
+    public SimpleRestServer(EventManager eventManager, int port) {
+        this.eventManager = eventManager;
+        this.port = port;
+    }
 
     @Override
     public void run() {
