@@ -1,11 +1,15 @@
 package me.nurio.simplerest;
 
+import lombok.Getter;
+import me.nurio.events.EventManager;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 
 public class SimpleRestLibrary {
 
-    static final int PORT = 8080;
+    @Getter private static EventManager eventManager = new EventManager();
+    private static final int PORT = 8080;
 
     public static void main(String[] args) {
         try {
@@ -15,7 +19,7 @@ public class SimpleRestLibrary {
 
             // we listen until user halts server execution
             while (true) {
-                HttpConnection myServer = new HttpConnection(serverConnect.accept());
+                HttpConnectionProcessor myServer = new HttpConnectionProcessor(serverConnect.accept());
                 myServer.start();
             }
         } catch (IOException e) {
