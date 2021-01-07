@@ -1,6 +1,5 @@
 package me.nurio.simplerest;
 
-import lombok.Data;
 import me.nurio.events.EventManager;
 import me.nurio.simplerest.entities.HttpRequest;
 import me.nurio.simplerest.entities.HttpResponse;
@@ -11,17 +10,18 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Date;
 
-@Data
 public class HttpConnectionProcessor extends Thread {
 
-    private static final EventManager eventManager = SimpleRestLibrary.getEventManager();
+    private final EventManager eventManager;
 
     private Socket connection;
     private String ipAddress;
     private String requestId;
 
-    public HttpConnectionProcessor(Socket connection) throws IOException {
+    public HttpConnectionProcessor(EventManager eventManager, Socket connection) throws IOException {
+        this.eventManager = eventManager;
         this.connection = connection;
+
         ipAddress = connection.getInetAddress().getHostAddress();
         requestId = Integer.toHexString(hashCode()).substring(0, 5);
         log("Connection started." + "(" + new Date() + ")");
