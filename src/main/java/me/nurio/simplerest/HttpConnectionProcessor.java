@@ -5,6 +5,7 @@ import me.nurio.simplerest.entities.HttpRequest;
 import me.nurio.simplerest.entities.HttpResponse;
 import me.nurio.simplerest.events.HttpResponseSendEvent;
 import me.nurio.simplerest.streams.HttpStreamReader;
+import me.nurio.simplerest.streams.HttpStreamWriter;
 
 import java.io.*;
 import java.net.Socket;
@@ -32,36 +33,24 @@ public class HttpConnectionProcessor extends Thread {
         log("Accepted HTTP request");
 
         try (
-            HttpStreamReader httpStream = new HttpStreamReader(connection.getInputStream());
-            PrintWriter out = new PrintWriter(connection.getOutputStream());
-            BufferedOutputStream dataOut = new BufferedOutputStream(connection.getOutputStream());
+            HttpStreamReader httpReader = new HttpStreamReader(connection.getInputStream());
+            HttpStreamWriter httpWriter = new HttpStreamWriter(connection.getOutputStream());
             Socket connection = this.connection
         ) {
 
             // Define request params
             HttpRequest request = new HttpRequest(
                 requestId, connection.getInetAddress(),
-                httpStream.getStartLine(), httpStream.getHeaders()
+                httpReader.getStartLine(), httpReader.getHeaders()
             );
 
             // Call event handler
             HttpResponseSendEvent sendEvent = new HttpResponseSendEvent(request);
             eventManager.callEvent(sendEvent);
 
+            // Send HTTP response
             HttpResponse response = sendEvent.getResponse();
-
-            // Send HTTP Headers
-            out.println("HTTP/1.1 " + response.getStatus());
-            out.println("Server: SimpleRestLibrary : 1.0");
-            out.println("Date: " + new Date());
-            out.println("Content-type: " + response.getContentType());
-            out.println("Content-length: " + response.getLength());
-            out.println(); // blank line between headers and content, very important !
-            out.flush(); // flush character output stream buffer
-
-            // Send body
-            dataOut.write(response.getBytes(), 0, response.getLength());
-            dataOut.flush();
+            httpWriter.send(response);
 
         } catch (Exception ioe) {
             log("Server error : " + ioe.getMessage());
