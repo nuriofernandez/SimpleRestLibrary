@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
 
 @Data
 @NoArgsConstructor
-public class HttpResponse {
+public class HttpResponse extends HttpHeadersManagement {
 
     private String contentType = "text/html";
 
