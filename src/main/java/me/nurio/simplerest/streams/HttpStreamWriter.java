@@ -25,6 +25,13 @@ public class HttpStreamWriter implements AutoCloseable {
         out.println("Date: " + new Date());
         out.println("Content-type: " + response.getContentType());
         out.println("Content-length: " + response.getLength());
+
+        // Print all additional headers joined with the comma character.
+        for (String header : response.getHeaders()) {
+            String value = String.join(",", response.getHeader(header));
+            out.println(header + ": " + value);
+        }
+
         out.println(); // blank line between headers and content, very important !
         out.flush(); // flush character output stream buffer
 
